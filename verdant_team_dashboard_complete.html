@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07110e" />
+  <title id="documentTitle">VERDANT/07 — Team OS</title>
+  <!-- Tailwind CSS CDN: tiện cho prototype/vibe coding. Production nên build Tailwind riêng. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { ink:'#07110e', forest:'#0b1d16', mint:'#b7f7d0', lime:'#d5ff73', muted:'#8ba99a' },
+        fontFamily: { display:['Space Grotesk','sans-serif'], body:['Inter','sans-serif'] },
+        boxShadow: { glow:'0 0 70px rgba(143,255,187,.12)' }
+      }}
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#07110e;color:#eef9f1;font-family:Inter,sans-serif;overflow-x:hidden}
+    .display{font-family:"Space Grotesk",sans-serif}
+    .mono{font-family:"DM Mono",monospace}
+    .mesh{background:radial-gradient(ellipse at 15% 20%,rgba(90,255,170,.15),transparent 35%),radial-gradient(ellipse at 82% 12%,rgba(193,255,97,.12),transparent 30%),radial-gradient(ellipse at 75% 82%,rgba(34,150,116,.16),transparent 36%),linear-gradient(135deg,#07110e 0%,#0a1c15 52%,#07110e 100%)}
+    .hero-media{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background-color:#07110e;background-position:center;background-size:cover;isolation:isolate}
+    .hero-media video,.hero-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover;pointer-events:none;display:none;transform:scale(1.025)}
+    .hero-media.has-video video,.hero-media.has-youtube iframe{display:block}
+    .hero-video-tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,10,7,.46),rgba(3,10,7,var(--hero-overlay-opacity,.60)) 48%,rgba(3,10,7,.72));z-index:1}
+    .hero-aurora{position:absolute;z-index:2;inset:-18%;pointer-events:none;opacity:.66;background:radial-gradient(ellipse at 18% 30%,rgba(22,190,124,.25),transparent 36%),radial-gradient(ellipse at 78% 18%,rgba(196,255,94,.20),transparent 30%),radial-gradient(ellipse at 64% 78%,rgba(46,180,127,.23),transparent 34%);filter:blur(28px);animation:auroraDrift 18s ease-in-out infinite alternate;display:block}
+    .hero-particles{position:absolute;z-index:2;inset:-20%;pointer-events:none;opacity:.26;background-image:radial-gradient(circle,rgba(215,255,224,.78) 1px,transparent 1.8px),radial-gradient(circle,rgba(213,255,115,.65) 1px,transparent 1.8px);background-size:58px 58px,87px 87px;background-position:0 0,24px 35px;animation:particleDrift 32s linear infinite;display:none}
+    .hero-media[data-animation="none"] .hero-aurora,.hero-media[data-animation="none"] .hero-particles{display:none}
+    .hero-media[data-animation="particles"] .hero-aurora{display:none}
+    .hero-media[data-animation="particles"] .hero-particles{display:block}
+    @keyframes auroraDrift{0%{transform:translate3d(-2%,1%,0) scale(1)}100%{transform:translate3d(3%,-2%,0) scale(1.12)}}
+    @keyframes particleDrift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-3%,2%,0)}}
+    .grid-bg{background-image:linear-gradient(rgba(198,255,219,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(198,255,219,.035) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 90%)}
+    .glass{background:linear-gradient(145deg,rgba(20,44,33,.82),rgba(9,22,16,.82));border:1px solid rgba(191,255,213,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 20px 80px rgba(0,0,0,.18);backdrop-filter:blur(18px)}
+    .green-text{background:linear-gradient(100deg,#effff4 5%,#b7f7d0 45%,#d5ff73 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .btn-primary{background:linear-gradient(110deg,#d5ff73,#a8f4c4);color:#07110e;transition:transform .2s,box-shadow .2s}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 35px rgba(181,255,134,.2)}
+    .nav-tab{color:#8ba99a;transition:all .2s;border:1px solid transparent}
+    .nav-tab.active{color:#eaffef;background:rgba(183,247,208,.09);border-color:rgba(183,247,208,.14)}
+    .view{display:none;animation:rise .35s ease both}.view.active{display:block}
+    @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .layer{transition:opacity .55s ease,transform .55s ease}
+    .layer.hidden-layer{opacity:0;pointer-events:none;transform:scale(.985);position:absolute;inset:0}
+    .layer.active-layer{opacity:1;position:relative;transform:scale(1);min-height:100vh}
+    .marquee-track{animation:marquee 28s linear infinite}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .marquee-track:hover{animation-play-state:paused}
+    .orb{background:radial-gradient(circle at 35% 25%,#d5ff73 0%,#8cebb5 24%,#176b4c 58%,#0a2118 78%);box-shadow:0 0 60px rgba(126,255,175,.22),inset -10px -12px 25px rgba(0,0,0,.28)}
+    .member-card{transition:transform .22s,border-color .22s}
+    .member-card:hover{transform:translateY(-4px);border-color:rgba(183,247,208,.3)}
+    .scroll-area{scrollbar-width:thin;scrollbar-color:#254b37 transparent}
+    .social-link{transition:all .2s}.social-link:hover{color:#d5ff73;transform:translateX(3px)}
+    .chat-message{max-width:88%;white-space:pre-wrap;overflow-wrap:anywhere}
+    .input-focus:focus{outline:none;border-color:rgba(183,247,208,.42);box-shadow:0 0 0 3px rgba(183,247,208,.06)}
+    @media(max-width:640px){.side-rail{display:none}.mobile-social{display:flex}.marquee-track{animation-duration:22s}}
+    @media(prefers-reduced-motion:reduce){.hero-aurora,.hero-particles,.marquee-track{animation:none!important}.btn-primary,.member-card,.social-link{transition:none!important}}
+  </style>
+</head>
+<body class="mesh min-h-screen">
+  <!-- Lưới/ánh sáng nền chung cho cả dashboard -->
+  <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
+  <div class="fixed -top-40 -left-32 w-96 h-96 rounded-full bg-emerald-400/10 blur-[110px] pointer-events-none z-0"></div>
+  <div class="fixed -bottom-40 right-0 w-[32rem] h-[32rem] rounded-full bg-lime-200/5 blur-[130px] pointer-events-none z-0"></div>
+
+  <!-- LỚP 0: CINEMATIC LANDING PAGE -->
+  <section id="landing" class="layer active-layer mesh z-10 overflow-hidden flex flex-col">
+    <!-- Video/animation background is configured in CFG below. It stays behind the hero content. -->
+    <div id="heroMediaBackground" class="hero-media" data-animation="aurora" aria-hidden="true">
+      <video id="https://youtube.com/shorts/2bL2dvFfqx0?si=Gi6T6Sab0FJo5hIi" autoplay muted loop playsinline preload="metadata" tabindex="-1"></video>
+      <iframe id="heroBackgroundYoutube" title="Video background" tabindex="-1" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <div class="hero-video-tint"></div>
+      <div id="heroAurora" class="hero-aurora"></div>
+      <div id="heroParticles" class="hero-particles"></div>
+    </div>
+    <div class="absolute inset-0 pointer-events-none opacity-70 z-0" style="background:radial-gradient(ellipse at 50% 48%,rgba(91,255,167,.12),transparent 40%)"></div>
+    <header class="relative z-10 flex items-center justify-between px-6 md:px-12 py-7">
+      <div class="flex items-center gap-3">
+        <!-- LOGO NHÓM: tự động hiện ảnh từ CFG.LOGO nếu được cấu hình -->
+        <div id="landingLogo" class="w-10 h-10 rounded-2xl border border-mint/25 bg-mint/10 flex items-center justify-center text-lime font-bold display">V.</div>
+        <div><p id="landingBrandName" class="display tracking-[.2em] text-sm font-bold">VERDANT/07</p><p id="landingBrandSub" class="mono text-[9px] tracking-[.2em] text-muted">TEAM KNOWLEDGE SYSTEM</p></div>
+      </div>
+      <div class="mono text-[10px] tracking-widest text-muted hidden sm:flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-lime animate-pulse"></span> SYSTEM ONLINE · <span id="landingSystemSchool">HCMUS</span></div>
+    </header>
+    <main class="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-5 pb-14">
+      <div class="mb-8 inline-flex items-center gap-2 rounded-full border border-mint/15 bg-white/[.035] px-4 py-2 mono text-[10px] text-mint tracking-wider">
+        <span class="w-1.5 h-1.5 rounded-full bg-lime"></span> <span id="landingEyebrow">A SMALL TEAM. A SHARED VISION.</span>
+      </div>
+      <!-- HERO LOGO PLACEHOLDER: có thể thay khối orb bằng ảnh logo nhóm -->
+      <div id="landingHeroLogo" class="relative mb-8 w-24 h-24 md:w-28 md:h-28 rounded-[2rem] orb rotate-[-8deg] flex items-center justify-center">
+        <span class="display text-4xl md:text-5xl font-bold text-ink rotate-[8deg]">V</span>
+        <span class="absolute -right-3 -top-2 w-5 h-5 rounded-full bg-lime border-4 border-forest"></span>
+      </div>
+      <p class="mono text-[10px] md:text-xs tracking-[.35em] text-muted mb-5"><span id="landingKicker">INFORMATION · COLLABORATION · CREATION</span></p>
+      <h1 class="display font-semibold text-5xl sm:text-7xl md:text-8xl leading-[.94] tracking-[-.07em] max-w-5xl"><span id="landingHeroTitle">Build together.</span><br><span id="landingHeroAccent" class="green-text">Grow beyond.</span></h1>
+      <p id="landingDescription" class="max-w-xl text-sm md:text-base leading-7 text-[#a9c2b3] mt-7">Không chỉ là một nhóm đồ án. Đây là không gian chung để kết nối con người, ghi lại hành trình và biến ý tưởng thành sản phẩm.</p>
+      <button onclick="enterApp()" class="btn-primary mt-9 px-7 py-4 rounded-2xl font-semibold text-sm inline-flex items-center gap-3"><span id="landingCtaText">Initialize workspace</span> <span aria-hidden="true">↗</span></button>
+      <div id="landingMeta" class="mt-8 mono text-[10px] tracking-widest text-muted">7 MEMBERS <span class="mx-2 text-lime/50">/</span> HCMUS · FACULTY OF IT <span class="mx-2 text-lime/50">/</span> PROJECT ARCHIVE</div>
+    </main>
+    <footer class="relative z-10 border-t border-white/[.07] py-4 overflow-hidden">
+      <div class="flex items-center gap-6 mb-3 px-6"><span id="marqueeLabel" class="mono text-[9px] tracking-[.2em] text-lime shrink-0">QUESTIONS TO EXPLORE</span><span class="h-px bg-white/10 flex-1"></span><span class="mono text-[9px] text-muted">SCROLLING FEED ↘</span></div>
+      <!-- FOOTER MARQUEE: sửa các câu [Question 1] ... tại đây -->
+      <div class="overflow-hidden">
+        <div id="marqueeTrack" class="marquee-track flex w-max gap-8 whitespace-nowrap mono text-xs text-[#9bb7a6]"></div>
+      </div>
+    </footer>
+  </section>
+
+  <!-- LỚP 1: APPLICATION DASHBOARD -->
+  <section id="app" class="layer hidden-layer z-10 min-h-screen">
+    <header class="sticky top-0 z-30 border-b border-white/[.07] bg-[#07110e]/85 backdrop-blur-2xl">
+      <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="min-h-[76px] flex items-center gap-4">
+          <button onclick="showLanding()" class="flex items-center gap-3 shrink-0 text-left" title="Về màn hình mở đầu">
+            <!-- LOGO HEADER: tự động lấy CFG.LOGO -->
+            <div id="headerLogo" class="w-10 h-10 rounded-xl bg-mint/10 border border-mint/20 flex items-center justify-center text-lime display font-bold">V.</div>
+            <div class="hidden sm:block"><p id="headerBrandName" class="display font-bold tracking-[.15em] text-sm">VERDANT/07</p><p id="headerBrandSub" class="mono text-[9px] text-muted tracking-wider">TEAM OS</p></div>
+          </button>
+          <div class="relative flex-1 max-w-sm ml-auto">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-muted" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+            <input id="searchInput" type="search" placeholder="Tìm thành viên, nội quy, sản phẩm..." class="input-focus w-full rounded-xl border border-white/10 bg-white/[.035] py-2.5 pl-9 pr-3 text-xs text-white placeholder:text-[#6f8b7b]" oninput="searchContent(this.value)" />
+          </div>
+          <div class="hidden xl:flex items-center gap-2 mono text-[9px] text-muted"><span class="w-1.5 h-1.5 rounded-full bg-lime"></span> WORKSPACE ACTIVE</div>
+        </div>
+        <nav class="flex gap-1 overflow-x-auto pb-3 scroll-area" aria-label="Main navigation">
+          <button class="nav-tab active rounded-xl px-4 py-2.5 text-xs font-medium whitespace-nowrap" data-view="home" onclick="switchView('home',this)">⌂ <span class="ml-1.5">Trang chủ</span></button>
+          <button class="nav-tab rounded-xl px-4 py-2.5 text-xs font-medium whitespace-nowrap" data-view="docs" onclick="switchView('docs',this)">▤ <span class="ml-1.5">Biên bản & Nội quy</span></button>
+          <button class="nav-tab rounded-xl px-4 py-2.5 text-xs font-medium whitespace-nowrap" data-view="members" onclick="switchView('members',this)">◉ <span class="ml-1.5">Thành viên</span></button>
+          <button class="nav-tab rounded-xl px-4 py-2.5 text-xs font-medium whitespace-nowrap" data-view="products" onclick="switchView('products',this)">◇ <span class="ml-1.5">Sản phẩm</span></button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- LEFT SIDEBAR: cập nhật URL social tại href bên dưới -->
+    <aside class="side-rail fixed z-20 left-0 top-1/2 -translate-y-1/2 pl-5">
+      <div class="glass rounded-2xl p-3 flex flex-col items-center gap-5">
+        <a class="social-link text-muted" id="socialFb" href="#" target="_blank" rel="noreferrer" aria-label="Facebook nhóm" title="Facebook nhóm"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M13.4 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.2V13H10v8z"/></svg></a>
+        <a class="social-link text-muted" id="socialZalo" href="#" target="_blank" rel="noreferrer" aria-label="Zalo nhóm" title="Zalo nhóm"><span class="mono text-[10px] font-bold">Zalo</span></a>
+        <a class="social-link text-muted" id="socialDiscord" href="#" target="_blank" rel="noreferrer" aria-label="Discord nhóm" title="Discord nhóm"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.7 5.3A18 18 0 0 0 15.3 4l-.5 1a16 16 0 0 0-5.6 0l-.5-1a18 18 0 0 0-4.4 1.3C1.5 9.4.8 13.4 1.2 17.4a18 18 0 0 0 5.4 2.7l1.2-2a11 11 0 0 1-1.9-.9l.5-.4a13 13 0 0 0 11.2 0l.5.4a11 11 0 0 1-1.9.9l1.2 2a18 18 0 0 0 5.4-2.7c.5-4.6-.8-8.6-3.1-12.1ZM8.7 14.8c-1.1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1Zm6.6 0c-1.1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1Z"/></svg></a>
+        <span class="w-5 h-px bg-white/10"></span>
+        <button onclick="switchView('docs',document.querySelector('[data-view=docs]'))" class="social-link text-muted text-[10px] mono" title="Tài liệu nhóm">DOC</button>
+        <!-- BONUS INFO: có thể thêm link drive, email, lịch nhóm tại đây -->
+        <a class="social-link text-muted text-[10px] mono" id="socialMail" href="#" title="Thông tin nhóm">INFO</a>
+      </div>
+    </aside>
+
+    <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 xl:pl-24 py-8 md:py-10 pb-24">
+      <!-- VIEW 1: HOME -->
+      <section id="view-home" class="view active">
+        <div class="flex items-center gap-2 mono text-[10px] text-muted mb-5"><span class="text-lime">01</span><span>/</span> OVERVIEW <span class="ml-auto">HCMUS · INFORMATION TECHNOLOGY</span></div>
+        <div class="grid lg:grid-cols-[1.4fr_.8fr] gap-5">
+          <div class="glass rounded-[2rem] p-6 sm:p-9 md:p-11 relative overflow-hidden min-h-[360px] flex flex-col justify-between">
+            <div class="absolute -right-16 -top-20 w-72 h-72 rounded-full border border-mint/10"></div><div class="absolute -right-6 -top-10 w-52 h-52 rounded-full border border-mint/10"></div>
+            <div class="relative z-10"><div class="inline-flex items-center gap-2 rounded-full bg-lime/10 text-lime px-3 py-1.5 mono text-[9px] tracking-wider mb-6">TEAM PROFILE <span class="w-1.5 h-1.5 rounded-full bg-lime"></span></div>
+              <h2 class="display text-4xl sm:text-5xl md:text-6xl tracking-[-.06em] leading-[.98] font-semibold">One team.<br><span class="green-text">Many minds.</span></h2>
+              <p class="mt-5 max-w-lg text-sm leading-7 text-[#a9c2b3]">Không gian thông tin tập trung cho nhóm 7 thành viên thực hiện đồ án cuối kỳ. Theo dõi tiến độ, lưu giữ quyết định và cùng nhau tạo nên điều có ý nghĩa.</p>
+            </div>
+            <div class="relative z-10 mt-10 flex flex-wrap gap-2">
+              <button onclick="switchView('members',document.querySelector('[data-view=members]'))" class="btn-primary rounded-xl px-4 py-3 text-xs font-semibold">Khám phá thành viên ↗</button>
+              <button onclick="switchView('docs',document.querySelector('[data-view=docs]'))" class="rounded-xl border border-white/10 px-4 py-3 text-xs text-[#c0d7c9] hover:bg-white/5">Mở tài liệu nhóm</button>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-1 gap-5">
+            <div class="glass rounded-[1.7rem] p-6 flex items-center justify-between min-h-[150px]">
+              <div><p class="mono text-[9px] tracking-[.2em] text-muted">TEAM SIZE</p><p id="teamSizeNumber" class="display text-5xl mt-2">07<span class="text-lime">.</span></p><p class="text-xs text-[#9bb7a6] mt-1">Thành viên cùng kiến tạo</p></div>
+              <div class="w-20 h-20 rounded-full border border-mint/15 flex items-center justify-center relative"><div class="w-12 h-12 rounded-full orb"></div><span class="absolute inset-1 rounded-full border border-dashed border-lime/30 animate-[spin_24s_linear_infinite]"></span></div>
+            </div>
+            <div class="glass rounded-[1.7rem] p-6 min-h-[150px]">
+              <div class="flex justify-between items-start"><p class="mono text-[9px] tracking-[.2em] text-muted">OUR BASE</p><span class="text-lime text-lg">↗</span></div>
+              <p id="schoolCardName" class="display text-2xl mt-4">HCMUS · FACULTY OF IT</p><p id="schoolCardDescription" class="text-xs text-[#9bb7a6] mt-2 leading-5 whitespace-pre-line">Khoa Công nghệ Thông tin<br>Đại học Khoa học Tự nhiên, ĐHQG-HCM</p>
+            </div>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-4 mt-5">
+          <div class="glass rounded-2xl p-5"><p class="mono text-[9px] tracking-widest text-muted">01 / PURPOSE</p><h3 class="display text-lg mt-3">Build with intent</h3><p class="text-xs text-[#91ad9c] leading-6 mt-2">Tập trung vào mục tiêu, phạm vi và giá trị của đồ án.</p></div>
+          <div class="glass rounded-2xl p-5"><p class="mono text-[9px] tracking-widest text-muted">02 / PROCESS</p><h3 class="display text-lg mt-3">Make progress visible</h3><p class="text-xs text-[#91ad9c] leading-6 mt-2">Cập nhật tiến trình và phân công để cả nhóm luôn đồng bộ.</p></div>
+          <div class="glass rounded-2xl p-5"><p class="mono text-[9px] tracking-widest text-muted">03 / IDENTITY</p><h3 class="display text-lg mt-3">Made by seven</h3><p class="text-xs text-[#91ad9c] leading-6 mt-2">Nơi lưu trữ nhận diện, logo và thẻ đeo của nhóm.</p></div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-5 mt-5">
+          <div class="glass rounded-[1.7rem] p-6"><div class="flex items-center justify-between mb-5"><div><p class="mono text-[9px] tracking-widest text-muted">TEAM IDENTITY</p><h3 class="display text-xl mt-2">Logo & thẻ đeo</h3></div><span class="text-lime">✳</span></div>
+            <!-- PLACEHOLDER: chèn ảnh logo/thẻ đeo nhóm vào đây -->
+            <div id="teamBadgeImage" class="rounded-2xl border border-dashed border-mint/20 bg-black/10 min-h-44 flex flex-col items-center justify-center text-center p-6"><div class="w-12 h-12 rounded-2xl border border-mint/20 flex items-center justify-center text-lime text-xl mb-3">＋</div><p class="text-sm text-[#c2d8ca]">Logo nhóm / Thẻ đeo</p><p class="mono text-[9px] text-muted mt-2">IMAGE PLACEHOLDER · ADD ASSET LATER</p></div>
+          </div>
+          <div class="glass rounded-[1.7rem] p-6"><div class="flex items-center justify-between mb-5"><div><p class="mono text-[9px] tracking-widest text-muted">LIVE DOCUMENTS</p><h3 class="display text-xl mt-2">Cập nhật nhóm</h3></div><span class="flex items-center gap-2 mono text-[9px] text-lime"><span class="w-1.5 h-1.5 rounded-full bg-lime animate-pulse"></span> EMBED READY</span></div>
+            <p class="text-xs leading-6 text-[#91ad9c]">Nhúng tài liệu Google Docs đã publish để thành viên có thể theo dõi biên bản và tiến độ mới nhất.</p>
+            <button onclick="switchView('docs',document.querySelector('[data-view=docs]'))" class="mt-5 text-xs text-lime hover:text-white">Đi tới biên bản & nội quy ↗</button>
+          </div>
+        </div>
+        <div class="glass rounded-2xl px-5 py-4 mt-5"><p class="mono text-[9px] tracking-[.18em] text-lime mb-2">BONUS / QUICK INFO</p><p id="bonusText" class="text-xs leading-6 text-[#a9c2b3]">[Bonus Info: thông tin thêm của nhóm]</p></div>
+      </section>
+
+      <!-- VIEW 2: GOOGLE DOCS EMBED -->
+      <section id="view-docs" class="view">
+        <div class="flex items-center gap-2 mono text-[10px] text-muted mb-5"><span class="text-lime">02</span><span>/</span> SHARED KNOWLEDGE</div>
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6"><div><p class="mono text-[9px] tracking-[.2em] text-lime mb-3">DOCUMENT CENTER</p><h2 id="docsHeading" class="display text-3xl sm:text-4xl tracking-[-.04em]">Biên bản <span class="text-muted">&</span> Nội quy</h2><p id="docsDescription" class="text-sm text-[#91ad9c] mt-3 max-w-2xl">Một nguồn thông tin chung cho biên bản thành lập, quy tắc làm việc và kế hoạch giao tiếp.</p></div><span class="mono text-[9px] text-muted border border-white/10 rounded-lg px-3 py-2">GOOGLE DOCS / EMBED</span></div>
+        <div class="glass rounded-[1.7rem] p-3 sm:p-5">
+          <div class="flex items-center gap-2 px-2 pb-4"><span class="w-2 h-2 rounded-full bg-red-400/80"></span><span class="w-2 h-2 rounded-full bg-yellow-300/80"></span><span class="w-2 h-2 rounded-full bg-lime/80"></span><span class="mono text-[9px] text-muted ml-2">TEAM_CHARTER_AND_RULES</span></div>
+          <!-- GOOGLE DOCS: dán URL nhúng / published URL vào src. Ví dụ: https://docs.google.com/document/d/e/....../pub?embedded=true -->
+          <iframe id="teamDocsFrame" title="Biên bản và nội quy nhóm" src="about:blank" class="w-full rounded-xl bg-[#0b1711] border border-white/[.06]" style="height:min(68vh,760px)" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          <div id="docsEmpty" class="mt-3 rounded-xl border border-dashed border-mint/15 bg-black/10 p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between"><div><p class="text-xs text-[#c5dbcd]">Khung tài liệu đang chờ liên kết</p><p class="mono text-[9px] text-muted mt-1">Cập nhật CFG.DOC_BIENBAN ở phần CẤU HÌNH phía cuối file.</p></div><span class="mono text-[9px] text-lime">READY FOR EMBED</span></div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: MEMBERS -->
+      <section id="view-members" class="view">
+        <div class="flex items-center gap-2 mono text-[10px] text-muted mb-5"><span class="text-lime">03</span><span>/</span> PEOPLE & PROGRESS</div>
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7"><div><p class="mono text-[9px] tracking-[.2em] text-lime mb-3">THE PEOPLE BEHIND THE PROJECT</p><h2 id="membersHeading" class="display text-3xl sm:text-4xl tracking-[-.04em]">Meet the <span class="green-text">team.</span></h2><p id="membersDescription" class="text-sm text-[#91ad9c] mt-3">Chọn một thành viên để xem vai trò, ảnh và tiến trình công việc.</p></div><span class="mono text-[10px] text-muted"id="memberCountLabel" >07 PEOPLE / ONE DIRECTION</span></div>
+        <div id="memberGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+      </section>
+
+      <!-- VIEW 4: PRODUCTS -->
+      <section id="view-products" class="view">
+        <div class="flex items-center gap-2 mono text-[10px] text-muted mb-5"><span class="text-lime">04</span><span>/</span> WORKS IN PROGRESS</div>
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7"><div><p class="mono text-[9px] tracking-[.2em] text-lime mb-3">THE THINGS WE MAKE</p><h2 id="productsHeading" class="display text-3xl sm:text-4xl tracking-[-.04em]">Our <span class="green-text">work.</span></h2><p id="productsDescription" class="text-sm text-[#91ad9c] mt-3">Ba vị trí sẵn sàng cho video demo, link sản phẩm và mô tả.</p></div><span class="mono text-[9px] border border-white/10 rounded-lg px-3 py-2 text-muted"id="productCountLabel">3 PROJECT SLOTS</span></div>
+        <div id="productGrid" class="grid lg:grid-cols-3 gap-5"></div>
+      </section>
+      <footer class="mt-14 pt-5 border-t border-white/[.07] flex flex-col sm:flex-row justify-between gap-3 mono text-[9px] tracking-wider text-muted"><span id="dashboardFooterBrand">VERDANT/07 · TEAM KNOWLEDGE SYSTEM</span><span id="dashboardFooterNote">BUILT TO GROW TOGETHER</span></footer>
+    </main>
+
+    <!-- FLOATING AI CHATBOT -->
+    <button id="chatFab" onclick="toggleChat()" class="fixed z-40 bottom-5 right-5 md:bottom-8 md:right-8 w-14 h-14 rounded-full orb flex items-center justify-center text-ink hover:scale-105 transition-transform" aria-label="Mở trợ lý AI" title="Hỏi trợ lý AI">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/><rect x="6" y="6" width="12" height="12" rx="4"/><path d="M9 10h.01M15 10h.01M9.5 14c1.5 1 3.5 1 5 0"/></svg>
+    </button>
+    <section id="chatPanel" class="hidden fixed z-50 bottom-24 right-4 md:right-8 w-[calc(100vw-2rem)] sm:w-[390px] h-[min(590px,72vh)] glass rounded-[1.6rem] overflow-hidden flex-col shadow-2xl" aria-label="AI team assistant">
+      <header class="px-4 py-4 border-b border-white/[.08] flex items-center gap-3">
+        <!-- CHATBOT AVATAR PLACEHOLDER: cấu hình CFG.BOT_AVATAR ở cuối file -->
+        <div id="chatAvatar" class="w-10 h-10 rounded-xl border border-mint/20 bg-mint/10 flex items-center justify-center text-lime">✳</div>
+        <div class="flex-1"><p id="chatbotName" class="display text-sm font-semibold">Team Assistant</p><p class="mono text-[9px] text-lime mt-1">● READY TO HELP</p></div>
+        <button onclick="toggleChat()" class="text-muted hover:text-white p-2" aria-label="Đóng chat">✕</button>
+      </header>
+      <div id="chatMessages" class="scroll-area flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+        <div id="chatGreeting" class="chat-message self-start rounded-2xl rounded-tl-sm bg-white/[.06] border border-white/[.06] p-3 text-xs leading-6 text-[#c7dbce]">Xin chào! Mình là trợ lý của nhóm. Bạn có thể hỏi về thành viên, quy tắc hoặc tiến độ đồ án.</div>
+      </div>
+      <form id="chatForm" class="p-3 border-t border-white/[.08] flex items-end gap-2">
+        <textarea id="chatInput" rows="1" placeholder="Hỏi điều gì đó về nhóm..." class="input-focus resize-none flex-1 max-h-28 rounded-xl border border-white/10 bg-black/20 px-3 py-3 text-xs text-white placeholder:text-[#708b7a]"></textarea>
+        <button class="btn-primary w-10 h-10 shrink-0 rounded-xl flex items-center justify-center" aria-label="Gửi tin nhắn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+      </form>
+    </section>
+
+    <!-- MEMBER DETAIL MODAL -->
+    <div id="memberModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md p-3 sm:p-6 items-center justify-center" role="dialog" aria-modal="true" aria-label="Chi tiết thành viên" onclick="if(event.target===this)closeMember()">
+      <div class="glass rounded-[1.7rem] w-full max-w-4xl max-h-[92vh] overflow-y-auto scroll-area p-5 sm:p-7">
+        <div class="flex justify-between items-start gap-4"><div><p class="mono text-[9px] tracking-[.2em] text-lime">MEMBER PROFILE / LIVE PROGRESS</p><h3 id="modalName" class="display text-2xl sm:text-3xl mt-2">Tên thành viên</h3><p id="modalRole" class="text-xs text-muted mt-2">Vai trò</p></div><button onclick="closeMember()" class="p-2 text-muted hover:text-white">✕</button></div>
+        <div class="grid md:grid-cols-[.7fr_1.3fr] gap-5 mt-6">
+          <div><div id="modalAvatar" class="rounded-2xl min-h-48 border border-dashed border-mint/20 bg-black/20 flex items-center justify-center text-5xl text-lime/70">＋</div><p id="modalBio" class="text-xs leading-6 text-[#9bb7a6] mt-4">Thông tin thành viên.</p><p class="mono text-[9px] text-muted mt-5">CURRENT RESPONSIBILITIES</p><p id="modalTask" class="text-xs leading-6 text-[#c6dbce] mt-2">Chưa cập nhật công việc.</p></div>
+          <div><div class="flex items-center justify-between mb-3"><p class="mono text-[9px] tracking-widest text-muted">LIVE PROGRESS / GOOGLE DOCS</p><span class="text-[9px] text-lime mono">EMBED</span></div>
+            <!-- MEMBER GOOGLE DOCS: đặt URL embed riêng cho từng thành viên trong mảng MEMBERS ở cuối file -->
+            <iframe id="memberDocsFrame" title="Tiến trình công việc thành viên" src="about:blank" class="w-full rounded-xl border border-white/[.06] bg-[#0b1711]" style="height:360px" loading="lazy"></iframe>
+            <p id="memberDocsNote" class="mono text-[9px] text-muted mt-3">Cập nhật MEMBERS[n].doc trong phần CẤU HÌNH ở cuối file để nhúng tài liệu cá nhân.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<script>
+/* ================= CẤU HÌNH: điền thông tin của bạn tại đây =================
+   Bạn có thể sửa tên nhóm, nội dung Layer 0, logo, hình ảnh, social, tài liệu,
+   thông tin chatbot và sản phẩm ngay trong khu vực này.
+   Lưu ý: GEMINI_API_KEY đặt trong HTML chỉ phù hợp cho demo/local. Không deploy
+   bản này công khai với key thật; người khác có thể xem source và dùng key của bạn.
+============================================================================= */
+const CFG = {
+  NAME: "FinalBot",                    // 👉 tên nhóm
+  LOGO: "https://files.catbox.moe/6cta3f.jfif",                              // 👉 URL/đường dẫn logo, vd "img/logo.png"
+  TEAM_BADGE_IMAGE: "https://files.catbox.moe/6cta3f.jfif",                  // 👉 ảnh logo/thẻ đeo hiển thị trong Trang chủ
+  BOT_AVATAR: "https://files.catbox.moe/ueo9rv.jpg",                        // 👉 link ảnh avatar chatbot (để trống dùng icon mặc định)
+  GEMINI_API_KEY: "AIzaSyC7eWfdHhq-CVkndLQAu8xxtBDmmVo3SkI",                    // 👉 ???
+  MODEL: "gemini-2.5-flash",             // 👉 model 
+  DOC_BIENBAN: "https://docs.google.com/document/d/1XdNSyQ9dZ8dvR4s1O1B0qNBqIGBt5vgVR01KVFehm9I/edit?tab=t.0#heading=h.c3y06vbazhrf",                       // 👉 link nhúng Google Docs biên bản & nội quy
+  SOCIAL: { fb: "https://www.facebook.com/tra.ao.457321", zalo: "https://chat.zalo.me/0941851885", discord: "https://discord.gg/GfSTx3YzQ", bonusLink: "#" }, // 👉 link trang nhóm
+  BONUS: "[Bonus Info: thông tin thêm của nhóm]", // 👉 thông tin phụ hiển thị trên trang chủ
+  KNOWLEDGE: "[Blank]",
+
+  // -------- TÙY BIẾN LAYER 0: landing page --------
+  BRAND_SUBTITLE: "Gia Đình 7 Người",
+  EYEBROW: "A SMALL TEAM. A SHARED VISION.",
+  HERO_TITLE: "Build together.",
+  HERO_ACCENT: "Grow beyond.",
+  HERO_KICKER: "INFORMATION · COLLABORATION · CREATION",
+  HERO_DESCRIPTION: "Không chỉ là một nhóm đồ án. Đây là không gian chung để kết nối con người, ghi lại những hành trình đẹp của nhau rồi cùng nhau tiến lên<3.",
+  CTA_TEXT: "Get Started",
+  HERO_META: "7 MEMBERS / HCMUS · FACULTY OF IT / 26C02 PROJECT ARCHIVE",
+  SCHOOL: "HCMUS · FACULTY OF IT",
+  SCHOOL_DESCRIPTION: "Khoa Công nghệ Thông tin\nĐại học Khoa học Tự nhiên, ĐHQG-HCM",
+  CHAT_GREETING: "Mình là trợ lý của nhóm. Bạn có thể hỏi về thành viên, quy tắc hoặc tiến độ đồ án.",
+  MARQUEE_LABEL: "QUESTIONS TO EXPLORE",
+
+  // -------- TÙY BIẾN CÁC NỘI DUNG TRÊN DASHBOARD --------
+  HOME_TITLE: "One team.",
+  HOME_ACCENT: "Many minds.",
+  HOME_DESCRIPTION: "Không gian thông tin tập trung cho nhóm 7 thành viên thực hiện đồ án cuối kỳ. Theo dõi tiến độ, lưu giữ quyết định và cùng nhau tạo nên điều có ý nghĩa.",
+  DOCS_TITLE: "Biên bản & Nội quy",
+  DOCS_DESCRIPTION: "Một nguồn thông tin chung cho biên bản thành lập, quy tắc làm việc và kế hoạch giao tiếp.",
+  MEMBERS_TITLE: "Meet the team.",
+  MEMBERS_DESCRIPTION: "Chọn một thành viên để xem vai trò, ảnh và tiến trình công việc.",
+  PRODUCTS_TITLE: "Our work.",
+  PRODUCTS_DESCRIPTION: "Ba vị trí sẵn sàng cho video demo, link sản phẩm và mô tả.",
+  CHATBOT_NAME: "Team Assistant",
+  FOOTER_NOTE: "BUILT TO GROW TOGETHER"
+};
+
+const MEMBERS = [ // 👉 name, role, img, doc; task/bio là tùy chọn
+  {name:"Thanh Danh", role:"", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"https://files.catbox.moe/u8v9tq.jpg ", doc:"https://docs.google.com/document/d/1rrEQciSJoOpo9LX4kDbc39pu5J3Z5F-0FbiRKiDS054/edit?usp=drive_link"},
+  {name:"Long Vĩ", role:"Trưởng nhóm", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"", doc:""},
+  {name:"Hủ Tiến", role:"", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"", doc:""},
+  {name:"Thanh Tiền", role:"", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"", doc:""},
+  {name:"Minh Khôi", role:"", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"", doc:""},
+  {name:"Hồng Lâm", role:"Thư kí", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"", doc:""},
+  {name:"Lê Khang", role:"", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"", doc:""}
+];
+
+const PRODUCTS = [ // 👉 video: link nhúng (vd https://www.youtube.com/embed/ID); link: URL sản phẩm (tùy chọn)
+  {name:"Sản phẩm 1", desc:"Sẵn sàng chờ cập nhật video và tài nguyên", video:"", link:""},
+  {name:"Sản phẩm 2", desc:"Sẵn sàng chờ cập nhật video và tài nguyên", video:"", link:""},
+  {name:"Sản phẩm 3", desc:"Sẵn sàng chờ cập nhật video và tài nguyên", video:"", link:""}
+];
+
+const QUESTIONS = ["Cuộc sống vốn có ý nghĩa, hay chính ta phải tự tạo ra nó?","Nếu ngày mai kết thúc, điều gì sẽ khiến những năm tháng qua trở nên đáng giá?","Ý nghĩa cuộc sống nằm ở đích đến hay ở cách ta đi qua từng khoảng khắc?","Ta sống để chứng minh bản thân với thế giới, hay để thấu hiểu chính mình?","Sau tất cả, hạnh phúc hay sự trưởng thành mới là giá trị cốt lõi?","Liệu ý nghĩa cuộc sống nằm ở những gì ta nhận được, hay những gì ta để lại?","Nếu không ai nhớ về ta trong tương lai, những gì ta làm hôm nay liệu có còn ý nghĩa?","Ta đang thực sự sống, hay chỉ đang tồn tại và lặp lại từng ngày?"]; // 👉 câu hỏi chạy ở cuối Lớp 0
+
+function enterApp(){
+  const landing=document.getElementById('landing'), app=document.getElementById('app');
+  landing.classList.remove('active-layer'); landing.classList.add('hidden-layer');
+  app.classList.remove('hidden-layer'); app.classList.add('active-layer');
+  const heroVideo=document.getElementById('https://youtube.com/shorts/2bL2dvFfqx0?si=Gi6T6Sab0FJo5hIi'); if(heroVideo)heroVideo.pause();
+  const heroYoutube=document.getElementById('heroBackgroundYoutube');
+  if(heroYoutube&&heroYoutube.src){heroYoutube.removeAttribute('src');document.getElementById('heroMediaBackground')?.classList.remove('has-youtube');}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showLanding(){
+  const landing=document.getElementById('landing'), app=document.getElementById('app');
+  app.classList.remove('active-layer'); app.classList.add('hidden-layer');
+  landing.classList.remove('hidden-layer'); landing.classList.add('active-layer');
+  configureHeroMedia();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function switchView(name,button){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const view=document.getElementById('view-'+name); if(view)view.classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const target=button||document.querySelector('[data-view="'+name+'"]'); if(target)target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderMembers(){
+  const grid=document.getElementById('memberGrid');
+  grid.innerHTML=MEMBERS.map((m,i)=>`
+    <button class="member-card glass rounded-[1.5rem] p-4 text-left" data-search="${escapeHtml((m.name+' '+m.role+' '+(m.task||m.role)).toLocaleLowerCase('vi'))}" onclick="openMember(${i})">
+      <div class="h-36 rounded-xl border border-mint/10 bg-black/15 flex items-center justify-center overflow-hidden relative">
+        ${m.img?`<img src="${escapeHtml(m.img)}" alt="${escapeHtml(m.name)}" class="w-full h-full object-cover">`:`<div class="w-16 h-16 rounded-2xl orb flex items-center justify-center display text-2xl font-bold text-ink">${String(i+1).padStart(2,'0')}</div><span class="absolute bottom-3 right-3 mono text-[9px] text-muted">PHOTO SLOT</span>`}
+      </div>
+      <div class="flex items-start justify-between gap-3 mt-4"><div><p class="display font-semibold text-base">${escapeHtml(m.name)}</p><p class="text-[11px] text-lime mt-1">${escapeHtml(m.role)}</p></div><span class="text-muted">↗</span></div>
+      <p class="text-xs text-[#91ad9c] leading-5 mt-3 line-clamp-2">${escapeHtml(m.task||m.role)}</p>
+      <div class="border-t border-white/[.07] mt-4 pt-3 flex justify-between items-center"><span class="mono text-[9px] text-muted">VIEW PROFILE</span><span class="w-1.5 h-1.5 rounded-full bg-lime/70"></span></div>
+    </button>`).join('');
+}
+function openMember(i){
+  const m=MEMBERS[i];
+  document.getElementById('modalName').textContent=m.name;
+  document.getElementById('modalRole').textContent=m.role;
+  document.getElementById('modalBio').textContent=m.bio||'Chưa có giới thiệu thành viên.';
+  document.getElementById('modalTask').textContent=m.task||m.role;
+  const avatar=document.getElementById('modalAvatar');
+  avatar.innerHTML=m.img?`<img src="${escapeHtml(m.img)}" alt="${escapeHtml(m.name)}" class="w-full h-56 object-cover rounded-2xl">`:`<div class="text-center"><div class="w-20 h-20 rounded-3xl orb flex items-center justify-center display text-3xl font-bold text-ink mx-auto">${String(i+1).padStart(2,'0')}</div><p class="mono text-[9px] text-muted mt-4">MEMBER PHOTO PLACEHOLDER</p></div>`;
+  setFrame('memberDocsFrame',m.doc,'memberDocsNote','Cập nhật MEMBERS[n].doc để hiển thị tiến trình.');
+  const modal=document.getElementById('memberModal'); modal.classList.remove('hidden'); modal.classList.add('flex'); document.body.style.overflow='hidden';
+}
+function closeMember(){const m=document.getElementById('memberModal');m.classList.add('hidden');m.classList.remove('flex');document.body.style.overflow='';}
+function setFrame(frameId,url,noteId,noteText){
+  const frame=document.getElementById(frameId),note=document.getElementById(noteId);
+  frame.src=url&&url.trim()?url:'about:blank';
+  if(note)note.classList.toggle('hidden',!!(url&&url.trim()));
+}
+function searchContent(value){
+  const q=value.trim().toLocaleLowerCase('vi');
+  // Tìm kiếm các card thành viên/sản phẩm; nếu không có kết quả sẽ ẩn card không khớp.
+  document.querySelectorAll('#memberGrid [data-search],#productGrid [data-search]').forEach(el=>{
+    const hay=(el.getAttribute('data-search')||'').toLocaleLowerCase('vi');
+    el.style.display=(!q||hay.includes(q))?'':'none';
+  });
+  if(q){
+    const matchedMember=[...document.querySelectorAll('#memberGrid [data-search]')].some(el=>el.style.display!=='none');
+    const matchedProduct=[...document.querySelectorAll('#productGrid [data-search]')].some(el=>el.style.display!=='none');
+    // Khi tìm kiếm, chuyển tới khu vực có kết quả đầu tiên.
+    if(matchedMember)switchView('members',document.querySelector('[data-view=members]'));
+    else if(matchedProduct)switchView('products',document.querySelector('[data-view=products]'));
+    else if(/nội quy|biên bản|quy tắc|giao tiếp|docs|meeting/.test(q))switchView('docs',document.querySelector('[data-view=docs]'));
+    else if(/nhóm|hcmus|đồ án|team/.test(q))switchView('home',document.querySelector('[data-view=home]'));
+  }else{
+    document.querySelectorAll('#memberGrid [data-search],#productGrid [data-search]').forEach(el=>el.style.display='');
+  }
+}
+function toggleChat(){
+  const panel=document.getElementById('chatPanel');
+  const isHidden=panel.classList.contains('hidden');
+  panel.classList.toggle('hidden'); panel.classList.toggle('flex');
+  if(isHidden)setTimeout(()=>document.getElementById('chatInput').focus(),50);
+}
+function addMessage(text,who){
+  const box=document.getElementById('chatMessages'),div=document.createElement('div');
+  div.className='chat-message '+(who==='user'?'self-end bg-lime/10 border border-lime/10 text-[#e8ffed] rounded-2xl rounded-tr-sm':'self-start bg-white/[.06] border border-white/[.06] text-[#c7dbce] rounded-2xl rounded-tl-sm')+' p-3 text-xs leading-6';
+  div.textContent=text;box.appendChild(div);box.scrollTop=box.scrollHeight;return div;
+}
+const chatHistory = []; // Lịch sử chat chỉ lưu tạm trong phiên trình duyệt hiện tại.
+async function askAssistant(question){
+  // Chế độ Gemini trực tiếp cho demo. API key sẽ được gửi trong header x-goog-api-key.
+  if(CFG.GEMINI_API_KEY && CFG.GEMINI_API_KEY.trim()){
+    const teamContext = [
+      `Tên nhóm: ${CFG.NAME}`,
+      `Thông tin nền do người quản trị cung cấp: ${CFG.KNOWLEDGE}`,
+      `Thành viên: ${MEMBERS.map(m=>`${m.name} — vai trò: ${m.role}; công việc: ${m.task||m.role}; giới thiệu: ${m.bio||''}`).join('\n')}`,
+      `Sản phẩm: ${PRODUCTS.map(p=>`${p.name} — ${p.desc}`).join('\n')}`,
+      `Tài liệu Google Docs được nhúng trong iframe và KHÔNG tự động đọc được nội dung bởi chatbot. Nếu câu hỏi liên quan đến nội dung trong Docs mà không có trong thông tin nền, hãy nói rõ điều đó và đề nghị người quản trị bổ sung đoạn nội dung cần thiết vào CFG.KNOWLEDGE.`
+    ].join('\n\n');
+    const systemText = `Bạn là ${CFG.CHATBOT_NAME}, trợ lý tra cứu thông tin cho nhóm ${CFG.NAME}. Trả lời bằng tiếng Việt tự nhiên, súc tích và thân thiện. Chỉ khẳng định những thông tin có trong dữ liệu bên dưới; nếu thiếu dữ liệu, hãy nói rõ là chưa có thông tin, không bịa ra tiến độ hay thông tin cá nhân.\n\nDỮ LIỆU NHÓM:\n${teamContext}`;
+    const contents = [...chatHistory.slice(-12), {role:'user', parts:[{text:question}]}];
+    try{
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(CFG.MODEL)}:generateContent`;
+      const response = await fetch(endpoint, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-goog-api-key':CFG.GEMINI_API_KEY.trim()},
+        body:JSON.stringify({
+          systemInstruction:{parts:[{text:systemText}]},
+          contents,
+          generationConfig:{temperature:0.45, maxOutputTokens:900}
+        })
+      });
+      const data = await response.json().catch(()=>({}));
+      if(!response.ok){
+        const detail=data?.error?.message||`HTTP ${response.status}`;
+        throw new Error(detail);
+      }
+      const answer=data?.candidates?.[0]?.content?.parts?.map(part=>part.text||'').join('').trim();
+      if(!answer)throw new Error('Gemini không trả về nội dung văn bản. Hãy kiểm tra model, API key và giới hạn API.');
+      chatHistory.push({role:'user',parts:[{text:question}]},{role:'model',parts:[{text:answer}]});
+      return answer;
+    }catch(error){
+      return `Không gọi được Gemini: ${error.message}\n\nKiểm tra CFG.GEMINI_API_KEY, CFG.MODEL, trạng thái Gemini API và quyền/quota của key. Với demo chạy trực tiếp trên browser, trình duyệt cũng cần kết nối Internet.`;
+    }
+  }
+
+  // Fallback khi chưa có API key: trả lời dựa trên dữ liệu CFG/MEMBERS/PRODUCTS.
+  const q=question.toLocaleLowerCase('vi');
+  if(/thành viên|ai trong nhóm|member|mọi người/.test(q))return MEMBERS.map(m=>`• ${m.name} — ${m.role}`).join('\n')+'\n\nMở tab Thành viên để xem hồ sơ và tài liệu tiến độ.';
+  const member=MEMBERS.find(m=>q.includes(m.name.toLocaleLowerCase('vi')));
+  if(member)return `${member.name}\nVai trò: ${member.role}\nCông việc: ${member.task||member.role}\n${member.bio||''}\n\n${member.doc?'Tài liệu tiến độ đã được cấu hình trong hồ sơ.':'Tài liệu Google Docs tiến độ chưa được cấu hình.'}`;
+  if(/nội quy|biên bản|quy tắc|giao tiếp/.test(q))return `Bạn hãy mở tab “Biên bản & Nội quy” để xem tài liệu nhóm. ${CFG.DOC_BIENBAN?'Google Docs đã được cấu hình.':'Điền CFG.DOC_BIENBAN để nhúng Google Docs.'}`;
+  if(/sản phẩm|video|demo|project/.test(q))return PRODUCTS.map(p=>`• ${p.name}: ${p.desc}`).join('\n');
+  if(CFG.KNOWLEDGE && !CFG.KNOWLEDGE.startsWith('[Dán thông tin nền'))return `Thông tin nền nhóm: ${CFG.KNOWLEDGE}`;
+  return 'Chatbot hiện đang ở chế độ dự phòng vì CFG.GEMINI_API_KEY chưa được điền. Hãy mở source HTML và nhập API key cùng model trong phần CẤU HÌNH.';
+}
+
+document.getElementById('chatForm').addEventListener('submit',async e=>{
+  e.preventDefault();const input=document.getElementById('chatInput'),question=input.value.trim();if(!question)return;
+  input.value='';addMessage(question,'user');
+  const pending=addMessage('Đang tìm thông tin…','assistant');
+  const reply=await askAssistant(question);pending.textContent=reply;
+  document.getElementById('chatMessages').scrollTop=document.getElementById('chatMessages').scrollHeight;
+});
+document.getElementById('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('chatForm').requestSubmit();}});
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderProducts(){
+  const grid=document.getElementById('productGrid');
+  grid.innerHTML=PRODUCTS.map((p,i)=>{
+    const media=p.video
+      ? `<iframe src="${escapeHtml(p.video)}" title="${escapeHtml(p.name)}" class="w-full aspect-video rounded-2xl border border-white/10 bg-black" loading="lazy" allowfullscreen></iframe>`
+      : `<div class="aspect-video rounded-2xl border border-dashed border-mint/20 bg-black/20 flex items-center justify-center relative overflow-hidden"><div class="absolute inset-0 opacity-50" style="background:radial-gradient(circle at 50% 50%,rgba(183,247,208,.12),transparent 55%)"></div><div class="relative text-center"><div class="text-3xl text-lime/70">＋</div><p class="mono text-[9px] tracking-widest text-muted mt-2">MEDIA SLOT ${String(i+1).padStart(2,'0')}</p></div></div>`;
+    const link=p.link?`<a href="${escapeHtml(p.link)}" target="_blank" rel="noreferrer" class="inline-flex mt-4 text-xs text-lime hover:text-white">Mở sản phẩm ↗</a>`:'';
+    return `<article class="product-card glass rounded-[1.7rem] p-4" data-search="${escapeHtml((p.name+' '+p.desc).toLocaleLowerCase('vi'))}">${media}<div class="p-2 pt-5"><div class="flex justify-between items-center gap-3"><h3 class="display text-xl">${escapeHtml(p.name)}</h3><span class="mono text-[9px] text-lime border border-lime/15 rounded-full px-2 py-1">${p.video||p.link?'AVAILABLE':'COMING SOON'}</span></div><p class="text-xs leading-6 text-[#91ad9c] mt-2">${escapeHtml(p.desc)}</p>${link}</div></article>`;
+  }).join('');
+}
+function renderMarquee(){
+  const track=document.getElementById('marqueeTrack');
+  const items=(QUESTIONS.length?QUESTIONS:['[Question1]']);
+  const html=items.map((q,i)=>`<span>${String(i+1).padStart(2,'0')} / ${escapeHtml(q)}</span><span class="text-lime">✳</span>`).join('');
+  track.innerHTML=html+html;
+}
+function setBrandLogo(id,hero=false){
+  const el=document.getElementById(id); if(!el)return;
+  if(CFG.LOGO){el.innerHTML=`<img src="${escapeHtml(CFG.LOGO)}" alt="${escapeHtml(CFG.NAME)} logo" class="w-full h-full object-contain rounded-2xl ${hero?'p-3':''}">`;el.classList.remove('orb');}
+  else if(id==='landingLogo'||id==='headerLogo')el.textContent=(CFG.NAME.trim()[0]||'T').toUpperCase()+'.';
+  else el.innerHTML=`<span class="display text-4xl md:text-5xl font-bold text-ink rotate-[8deg]">${escapeHtml((CFG.NAME.trim()[0]||'T').toUpperCase())}</span><span class="absolute -right-3 -top-2 w-5 h-5 rounded-full bg-lime border-4 border-forest"></span>`;
+}
+function configureHeroMedia(){
+  const layer=document.getElementById('heroMediaBackground');
+  const video=document.getElementById('https://youtube.com/shorts/2bL2dvFfqx0?si=Gi6T6Sab0FJo5hIi');
+  const youtube=document.getElementById('heroBackgroundYoutube');
+  if(!layer||!video||!youtube)return;
+  const animation=['aurora','particles','none'].includes(String(CFG.HERO_ANIMATION||'').toLowerCase())?String(CFG.HERO_ANIMATION).toLowerCase():'aurora';
+  layer.dataset.animation=animation;
+  const overlay=Math.max(0,Math.min(1,Number(CFG.HERO_OVERLAY_OPACITY ?? .60)));
+  layer.style.setProperty('--hero-overlay-opacity',String(overlay));
+  const opacity=Math.max(0,Math.min(1,Number(CFG.HERO_VIDEO_OPACITY ?? .32)));
+  video.style.opacity=String(opacity);youtube.style.opacity=String(opacity);
+  const poster=String(CFG.HERO_BACKGROUND_POSTER||'').trim();
+  if(poster){video.poster=poster;layer.style.backgroundImage=`url("${poster.replace(/["\\]/g,'\\$&')}")`;}
+  const source=String(CFG.HERO_BACKGROUND_VIDEO||'').trim();
+  if(!source){video.removeAttribute('src');video.load();youtube.removeAttribute('src');layer.classList.remove('has-video','has-youtube');return;}
+  const yt=source.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/i);
+  if(yt){
+    const id=yt[1];
+    youtube.src=`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1`;
+    video.removeAttribute('src');video.load();layer.classList.remove('has-video');layer.classList.add('has-youtube');
+  }else{
+    youtube.removeAttribute('src');
+    video.src=source;
+    if(poster)video.poster=poster;
+    video.load();
+    layer.classList.remove('has-youtube');layer.classList.add('has-video');
+    video.play().catch(()=>{}); // Autoplay có thể bị trình duyệt chặn; poster/animation vẫn làm nền.
+    video.addEventListener('error',()=>{layer.classList.remove('has-video');},{once:true});
+  }
+}
+function applyConfig(){
+  document.title=`${CFG.NAME} — Team OS`;
+  const textMap={
+    landingBrandName:CFG.NAME, headerBrandName:CFG.NAME,
+    landingBrandSub:CFG.BRAND_SUBTITLE, headerBrandSub:CFG.BRAND_SUBTITLE, landingEyebrow:CFG.EYEBROW,
+    landingHeroTitle:CFG.HERO_TITLE, landingHeroAccent:CFG.HERO_ACCENT,
+    landingKicker:CFG.HERO_KICKER, landingDescription:CFG.HERO_DESCRIPTION,
+    landingCtaText:CFG.CTA_TEXT, marqueeLabel:CFG.MARQUEE_LABEL,
+    landingSystemSchool:CFG.SCHOOL, docsDescription:CFG.DOCS_DESCRIPTION,
+    membersDescription:CFG.MEMBERS_DESCRIPTION, productsDescription:CFG.PRODUCTS_DESCRIPTION,
+    chatbotName:CFG.CHATBOT_NAME, bonusText:CFG.BONUS,
+    dashboardFooterNote:CFG.FOOTER_NOTE, chatGreeting:CFG.CHAT_GREETING
+  };
+  Object.entries(textMap).forEach(([id,value])=>{const el=document.getElementById(id);if(el&&value!==undefined)el.textContent=value;});
+  const meta=document.getElementById('landingMeta');
+  if(meta)meta.innerHTML=escapeHtml(CFG.HERO_META).replace(/\s*\/\s*/g,' <span class="mx-2 text-lime/50">/</span> ');
+  const docsTitle=document.getElementById('docsHeading');
+  if(docsTitle){const parts=CFG.DOCS_TITLE.split('&');docsTitle.textContent=CFG.DOCS_TITLE;}
+  const memberTitle=document.getElementById('membersHeading');if(memberTitle)memberTitle.textContent=CFG.MEMBERS_TITLE;
+  const productsTitle=document.getElementById('productsHeading');if(productsTitle)productsTitle.textContent=CFG.PRODUCTS_TITLE;
+  const homeTitle=document.querySelector('#view-home h2');
+  if(homeTitle)homeTitle.innerHTML=`${escapeHtml(CFG.HOME_TITLE)}<br><span class="green-text">${escapeHtml(CFG.HOME_ACCENT)}</span>`;
+  const homeDescription=document.querySelector('#view-home .glass p.max-w-lg');if(homeDescription)homeDescription.textContent=CFG.HOME_DESCRIPTION;
+  const footerBrand=document.getElementById('dashboardFooterBrand');if(footerBrand)footerBrand.textContent=`${CFG.NAME} · TEAM KNOWLEDGE SYSTEM`;
+  const count=document.getElementById('memberCountLabel');if(count)count.textContent=`${String(MEMBERS.length).padStart(2,'0')} PEOPLE / ONE DIRECTION`;
+  const productCount=document.getElementById('productCountLabel');if(productCount)productCount.textContent=`${PRODUCTS.length} PROJECT SLOTS`;
+  const schoolCard=document.getElementById('schoolCardName');if(schoolCard)schoolCard.textContent=CFG.SCHOOL;
+  const schoolDescription=document.getElementById('schoolCardDescription');if(schoolDescription){schoolDescription.textContent=CFG.SCHOOL_DESCRIPTION;schoolDescription.style.whiteSpace='pre-line';}
+  const teamSize=document.getElementById('teamSizeNumber');if(teamSize)teamSize.innerHTML=`${String(MEMBERS.length).padStart(2,'0')}<span class="text-lime">.</span>`;
+  if(CFG.TEAM_BADGE_IMAGE){const badge=document.getElementById('teamBadgeImage');badge.className='rounded-2xl overflow-hidden border border-mint/20 bg-black/10';badge.innerHTML=`<img src="${escapeHtml(CFG.TEAM_BADGE_IMAGE)}" alt="Logo / thẻ đeo nhóm" class="w-full max-h-72 object-contain rounded-2xl">`;}
+  const social={socialFb:CFG.SOCIAL.fb,socialZalo:CFG.SOCIAL.zalo,socialDiscord:CFG.SOCIAL.discord,socialMail:CFG.SOCIAL.bonusLink};
+  Object.entries(social).forEach(([id,url])=>{const el=document.getElementById(id);if(el)el.href=url||'#';});
+  setBrandLogo('landingLogo');setBrandLogo('headerLogo');setBrandLogo('landingHeroLogo',true);
+  configureHeroMedia();
+  setFrame('teamDocsFrame',CFG.DOC_BIENBAN,'docsEmpty','');
+  if(CFG.BOT_AVATAR){
+    const avatarMarkup=`<img src="${escapeHtml(CFG.BOT_AVATAR)}" alt="Chatbot avatar" class="w-full h-full object-cover rounded-xl">`;
+    const a=document.getElementById('chatAvatar');if(a)a.innerHTML=avatarMarkup;
+    const fab=document.getElementById('chatFab');if(fab){fab.innerHTML=avatarMarkup;fab.classList.remove('text-ink');fab.classList.add('overflow-hidden','border','border-mint/30');}
+  }
+  renderMarquee();
+}
+function init(){
+  applyConfig();
+  renderMembers();
+  renderProducts();
+}
+init();
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMember();const p=document.getElementById('chatPanel');p.classList.add('hidden');p.classList.remove('flex');}});
+</script>
+</body>
+</html>
