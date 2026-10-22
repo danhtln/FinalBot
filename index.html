@@ -73,7 +73,7 @@
   <section id="landing" class="layer active-layer mesh z-10 overflow-hidden flex flex-col">
     <!-- Video/animation background is configured in CFG below. It stays behind the hero content. -->
     <div id="heroMediaBackground" class="hero-media" data-animation="aurora" aria-hidden="true">
-      <video id="https://youtube.com/shorts/2bL2dvFfqx0?si=Gi6T6Sab0FJo5hIi" autoplay muted loop playsinline preload="metadata" tabindex="-1"></video>
+      <video id="heroBackgroundVideo" autoplay muted loop playsinline preload="metadata" tabindex="-1"></video>
       <iframe id="heroBackgroundYoutube" title="Video background" tabindex="-1" allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
       <div class="hero-video-tint"></div>
       <div id="heroAurora" class="hero-aurora"></div>
@@ -277,6 +277,7 @@ const CFG = {
   SOCIAL: { fb: "https://www.facebook.com/tra.ao.457321", zalo: "https://chat.zalo.me/0941851885", discord: "https://discord.gg/GfSTx3YzQ", bonusLink: "#" }, // 👉 link trang nhóm
   BONUS: "[Bonus Info: thông tin thêm của nhóm]", // 👉 thông tin phụ hiển thị trên trang chủ
   KNOWLEDGE: "[Blank]",
+  HERO_BACKGROUND_VIDEO: "https://youtube.com/shorts/2bL2dvFfqx0?si=Gi6T6Sab0FJo5hIi",
 
   // -------- TÙY BIẾN LAYER 0: landing page --------
   BRAND_SUBTITLE: "Gia Đình 7 Người",
@@ -328,7 +329,7 @@ function enterApp(){
   const landing=document.getElementById('landing'), app=document.getElementById('app');
   landing.classList.remove('active-layer'); landing.classList.add('hidden-layer');
   app.classList.remove('hidden-layer'); app.classList.add('active-layer');
-  const heroVideo=document.getElementById('https://youtube.com/shorts/2bL2dvFfqx0?si=Gi6T6Sab0FJo5hIi'); if(heroVideo)heroVideo.pause();
+  const heroVideo=document.getElementById('heroBackgroundVideo'); if(heroVideo)heroVideo.pause();
   const heroYoutube=document.getElementById('heroBackgroundYoutube');
   if(heroYoutube&&heroYoutube.src){heroYoutube.removeAttribute('src');document.getElementById('heroMediaBackground')?.classList.remove('has-youtube');}
   window.scrollTo({top:0,behavior:'smooth'});
@@ -488,7 +489,7 @@ function setBrandLogo(id,hero=false){
 }
 function configureHeroMedia(){
   const layer=document.getElementById('heroMediaBackground');
-  const video=document.getElementById('https://youtube.com/shorts/2bL2dvFfqx0?si=Gi6T6Sab0FJo5hIi');
+  const video=document.getElementById('heroBackgroundVideo');
   const youtube=document.getElementById('heroBackgroundYoutube');
   if(!layer||!video||!youtube)return;
   const animation=['aurora','particles','none'].includes(String(CFG.HERO_ANIMATION||'').toLowerCase())?String(CFG.HERO_ANIMATION).toLowerCase():'aurora';
