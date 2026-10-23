@@ -98,6 +98,7 @@
         <span class="absolute -right-3 -top-2 w-5 h-5 rounded-full bg-lime border-4 border-forest"></span>
       </div>
       <p class="mono text-[10px] md:text-xs tracking-[.35em] text-muted mb-5"><span id="landingKicker">INFORMATION · COLLABORATION · CREATION</span></p>
+      <p class="text-sm md:text-base font-medium text-gray-400 mb-2">Together, we are</p> //Small elements
       <h1 class="display font-semibold text-5xl sm:text-7xl md:text-8xl leading-[.94] tracking-[-.07em] max-w-5xl"><span id="landingHeroTitle">Build together.</span><br><span id="landingHeroAccent" class="green-text">Grow beyond.</span></h1>
       <p id="landingDescription" class="max-w-xl text-sm md:text-base leading-7 text-[#a9c2b3] mt-7">Không chỉ là một nhóm đồ án. Đây là không gian chung để kết nối con người, ghi lại hành trình và biến ý tưởng thành sản phẩm.</p>
       <button onclick="enterApp()" class="btn-primary mt-9 px-7 py-4 rounded-2xl font-semibold text-sm inline-flex items-center gap-3"><span id="landingCtaText">Initialize workspace</span> <span aria-hidden="true">↗</span></button>
@@ -274,7 +275,7 @@ const CFG = {
   GEMINI_API_KEY: "AIzaSyC7eWfdHhq-CVkndLQAu8xxtBDmmVo3SkI",                    // 👉 ???
   MODEL: "gemini-2.5-flash",             // 👉 model 
   DOC_BIENBAN: "https://docs.google.com/document/d/1XdNSyQ9dZ8dvR4s1O1B0qNBqIGBt5vgVR01KVFehm9I/edit?tab=t.0#heading=h.c3y06vbazhrf",                       // 👉 link nhúng Google Docs biên bản & nội quy
-  SOCIAL: { fb: "https://www.facebook.com/tra.ao.457321", zalo: "https://chat.zalo.me/0941851885", discord: "https://discord.gg/GfSTx3YzQ", bonusLink: "#" }, // 👉 link trang nhóm
+  SOCIAL: { fb: "https://www.facebook.com/tra.ao.457321", zalo: "zalo.me/0941851885", discord: "https://discord.gg/GfSTx3YzQ", bonusLink: "#" }, // 👉 link trang nhóm
   BONUS: "[Bonus Info: thông tin thêm của nhóm]", // 👉 thông tin phụ hiển thị trên trang chủ
   KNOWLEDGE: "[Blank]",
   HERO_BACKGROUND_VIDEO: "https://files.catbox.moe/2ecx5t.mp4",
@@ -282,8 +283,8 @@ const CFG = {
   // -------- TÙY BIẾN LAYER 0: landing page --------
   BRAND_SUBTITLE: "Gia Đình 7 Người",
   EYEBROW: "A SMALL TEAM. A SHARED VISION.",
-  HERO_TITLE: "Together, we are",
-  HERO_ACCENT: "Final Bot",
+  HERO_TITLE: " ",
+  HERO_ACCENT: "FinalBot",
   HERO_KICKER: "INFORMATION · COLLABORATION · CREATION",
   HERO_DESCRIPTION: "Không chỉ là một nhóm đồ án. Đây là không gian chung để kết nối con người, ghi lại những hành trình đẹp của nhau rồi cùng nhau tiến lên<3.",
   CTA_TEXT: "Get Started",
@@ -308,7 +309,7 @@ const CFG = {
 };
 
 const MEMBERS = [ // 👉 name, role, img, doc; task/bio là tùy chọn
-  {name:"Thanh Danh", role:"", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"https://files.catbox.moe/u8v9tq.jpg ", doc:"https://docs.google.com/document/d/1rrEQciSJoOpo9LX4kDbc39pu5J3Z5F-0FbiRKiDS054/edit?usp=drive_link"},
+  {name:"Thanh Danh", role:"", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"https://files.catbox.moe/u8v9tq.jpg ", doc:"https://docs.google.com/document/d/1rrEQciSJoOpo9LX4kDbc39pu5J3Z5F-0FbiRKiDS054/edit?usp=drivesdk"},
   {name:"Long Vĩ", role:"Trưởng nhóm", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"", doc:""},
   {name:"Hủ Tiến", role:"", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"", doc:""},
   {name:"Thanh Tiền", role:"", task:"", bio:"[Giới thiệu ngắn về thành viên]", img:"", doc:""},
