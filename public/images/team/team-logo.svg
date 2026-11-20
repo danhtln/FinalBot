@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="logoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b16" />
+      <stop offset="100%" stop-color="#3d2c1d" />
+    </linearGradient>
+    <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5d496" />
+      <stop offset="50%" stop-color="#b37a44" />
+      <stop offset="100%" stop-color="#7c532d" />
+    </linearGradient>
+  </defs>
+  <!-- Background Shield/Emblem -->
+  <rect width="200" height="200" rx="36" fill="url(#logoBg)" />
+  <rect x="8" y="8" width="184" height="184" rx="28" fill="none" stroke="url(#goldAccent)" stroke-width="2" stroke-dasharray="6 4" opacity="0.7" />
+  
+  <!-- Stylized Geometric Logo Icon: "FB" (FinalBot) -->
+  <polygon points="100,32 155,64 155,136 100,168 45,136 45,64" fill="none" stroke="url(#goldAccent)" stroke-width="3" />
+  
+  <text x="100" y="112" font-family="'JetBrains Mono', monospace" font-size="34" font-weight="900" fill="#f6f2e9" text-anchor="middle" letter-spacing="2">FB</text>
+  <text x="100" y="138" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="600" fill="#d4a26a" text-anchor="middle" letter-spacing="3">FINAL BOT</text>
+  <text x="100" y="152" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="500" fill="#9a6a3e" text-anchor="middle" letter-spacing="1">GROUP 06 • HCMUS</text>
+</svg>

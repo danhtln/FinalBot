@@ -1,0 +1,10 @@
+HƯỚNG DẪN THÊM ẢNH ĐẠI DIỆN CHO CHATBOT AI:
+======================================================
+1. Đặt file ảnh avatar chatbot của bạn vào chính thư mục này:
+   public/images/chatbot-avatar.png
+   (hoặc chatbot-avatar.jpg / chatbot-avatar.webp / chatbot-avatar.svg)
+
+2. Hoặc bạn có thể đổi đường dẫn biến `CHATBOT_AVATAR_SRC` trong file:
+   components/gemini-chatbot-fab.tsx
+
+3. Ảnh sẽ tự động hiển thị trên thanh tiêu đề của khung chat và trong từng phản hồi của AI Chatbot!

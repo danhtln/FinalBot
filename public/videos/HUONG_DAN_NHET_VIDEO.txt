@@ -1,0 +1,11 @@
+HƯỚNG DẪN THÊM VIDEO NỀN (BACKGROUND VIDEO) CHO LAYER 0:
+======================================================
+1. Đặt file video của bạn vào chính thư mục này:
+   public/videos/background.mp4
+   (hoặc public/videos/background.webm, hoặc ngay tại public/background.mp4)
+
+2. Định dạng khuyến nghị:
+   - File: background.mp4 (H.264 / AAC) hoặc .webm
+   - Độ phân giải: 1920x1080 (Full HD) hoặc 1280x720 để tải nhanh, mượt mà.
+
+3. Khi bạn nhét file video vào, website sẽ tự động nhận diện và phát video nền toàn màn hình cho Layer 0 ngay lập tức!

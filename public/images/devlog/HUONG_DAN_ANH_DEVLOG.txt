@@ -1,0 +1,13 @@
+HƯỚNG DẪN THÊM ẢNH CHO MỤC 8 (DEV LOG & MEMORY PHOTO CORNER):
+===============================================================
+1. Đặt 4 bức ảnh kỷ niệm của nhóm vào chính thư mục này:
+   - Ảnh 01 (Thư viện tầng 4): public/images/devlog/memory-01.jpg
+   - Ảnh 02 (Đêm thức làm code): public/images/devlog/memory-02.jpg
+   - Ảnh 03 (Phỏng vấn sân trường): public/images/devlog/memory-03.jpg
+   - Ảnh 04 (Kỷ niệm 7 thành viên): public/images/devlog/memory-04.jpg
+
+2. Định dạng khuyến nghị:
+   - File: .jpg / .jpeg / .png / .webp
+   - Tỉ lệ: 4:3 hoặc 16:9 ngang
+
+3. Ảnh sẽ tự động hiển thị trên khung ảnh phong cách Polaroid trong Tab 8 (Dev Log)!

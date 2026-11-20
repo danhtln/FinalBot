@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Layer 0 — Custom Source Code Slot</title>
+  <!--
+    ==========================================================================
+    LAYER 0 CUSTOM SOURCE CODE SLOT (/public/layer0/index.html)
+    ==========================================================================
+    INSTRUCTIONS:
+    1. Paste your entire custom Layer 0 HTML/CSS/JS source code into this file.
+    2. In `config.js` or `lib/config.ts`, set `layer0Config.useCustomHtmlFile = true`.
+    3. To trigger the transition from your custom Layer 0 into Layer 1 Dashboard,
+       call:
+         window.parent.postMessage({ type: "LAYER0_INITIALIZE" }, "*");
+       from your CTA button click handler!
+    ==========================================================================
+  -->
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: Georgia, serif;
+      background: #f6f3ec;
+      color: #1e1b16;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+    .box {
+      max-width: 540px;
+      padding: 40px;
+      border: 1px solid rgba(30, 27, 22, 0.16);
+      background: rgba(255, 255, 255, 0.7);
+    }
+    button {
+      margin-top: 24px;
+      padding: 12px 28px;
+      border: 1px solid #1e1b16;
+      background: #1e1b16;
+      color: #f6f3ec;
+      cursor: pointer;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <p style="letter-spacing: 0.2em; font-size: 11px; text-transform: uppercase; opacity: 0.6;">
+      Layer 0 Custom Source Slot
+    </p>
+    <h1>The True Meaning of Life</h1>
+    <p>
+      Paste your custom Layer 0 source code into <code>/public/layer0/index.html</code>.
+    </p>
+    <button onclick="window.parent.postMessage({ type: 'LAYER0_INITIALIZE' }, '*')">
+      Initialize Layer 1
+    </button>
+  </div>
+</body>
+</html>

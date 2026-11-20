@@ -1,0 +1,12 @@
+HƯỚNG DẪN THÊM VIDEO SẢN PHẨM (MỤC 7 - PRODUCTS):
+==================================================
+1. Đặt các file video sản phẩm vào chính thư mục này:
+   - Sản phẩm 01: public/videos/products/product-01.mp4
+   - Sản phẩm 02: public/videos/products/product-02.mp4
+   - Sản phẩm 03: public/videos/products/product-03.mp4
+
+2. Định dạng khuyến nghị:
+   - File: .mp4 (codec H.264 / AAC) hoặc .webm
+   - Bạn cũng có thể dùng link nhúng YouTube / Vimeo trực tiếp bằng cách điền vào config hoặc bấm nút "Paste Video/Demo URL" ngay trên giao diện Tab 7.
+
+3. Khi bạn copy file video vào đây, website sẽ tự động nhận diện và phát video bằng trình phát video HTML5 chất lượng cao!

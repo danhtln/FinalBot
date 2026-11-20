@@ -1,0 +1,19 @@
+HƯỚNG DẪN THAY ẢNH CHÂN DUNG 7 THÀNH VIÊN:
+==================================================
+1. Đặt ảnh chân dung của 7 thành viên vào chính thư mục này với tên file tương ứng:
+   - Thành viên 01 (Trần Thanh Danh): public/images/members/member-01.jpg
+   - Thành viên 02 (Lê Khang):          public/images/members/member-02.jpg
+   - Thành viên 03 (Cao Minh Khôi):    public/images/members/member-03.jpg
+   - Thành viên 04 (Châu Hồng Lâm):    public/images/members/member-04.jpg
+   - Thành viên 05 (Nguyễn Thanh Tiến):public/images/members/member-05.jpg
+   - Thành viên 06 (Võ Hữu Tiến):      public/images/members/member-06.jpg
+   - Thành viên 07 (Lê Bạch Long Vĩ):  public/images/members/member-07.jpg
+
+2. Định dạng:
+   - File: .jpg / .jpeg / .png
+   - Tỉ lệ khuyến nghị: 1:1 (vuông) hoặc 3:4 (chân dung)
+
+3. Ảnh sẽ xuất hiện tự động tại:
+   - Tab 3 (Members - Filmstrip 3D & Modal chi tiết thành viên)
+   - Tab 1 (Home)
+   - Tất cả các vị trí hiển thị avatar thành viên trên website

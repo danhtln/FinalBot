@@ -1,0 +1,31 @@
+{
+  "_comment": "Centralized JSON Configuration for FinalBott — HCMUS FIT 7-Person Team Portfolio ('The True Meaning of Life'). Edit any field below to update the website.",
+  "teamName": "FinalBot // GROUP 06",
+  "teamCode": "G06",
+  "projectTitle": "The True Meaning of Life",
+  "projectSubtitle": "",
+  "university": "University of Science, VNU-HCM (HCMUS)",
+  "faculty": "Faculty of Information Technology (FITUS)",
+  "classInfo": "7 Core Members",
+  "semester": "First Year",
+  "teamLogoUrl": "",
+  "teamPhotoUrl": "",
+  "geminiApiKey": "YOUR_GEMINI_API_KEY_HERE",
+  "socialLinks": {
+    "facebook": "https://facebook.com/hcmus.fit.team",
+    "zalo": "https://zalo.me/g/hcmusfitgroup",
+    "discord": "https://discord.gg/hcmus-meaning",
+    "github": "https://github.com/hcmus-fit-meaning-of-life",
+    "email": "contact.group07@fit.hcmus.edu.vn"
+  },
+  "teamVibeStats": {
+    "milkTeasConsumed": 142,
+    "linesOfCodeWritten": 28450,
+    "lateNightDiscussions": 37,
+    "philosophicalBooksRead": 19,
+    "coffeeCups": 218,
+    "bugsResolved": 164,
+    "hoursInLibrary": 310,
+    "commitsPushed": 412
+  }
+}
